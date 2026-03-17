@@ -2,84 +2,78 @@ import java.util.*;
 
 public class PalindromeCheckerApp {
 
-    // Strategy Interface
-    interface PalindromeStrategy {
-        boolean check(String input);
+    // Method 1: Using String reversal
+    public static boolean isPalindromeReverse(String str) {
+        String reversed = new StringBuilder(str).reverse().toString();
+        return str.equals(reversed);
     }
 
-    // Stack-based Strategy
-    static class StackStrategy implements PalindromeStrategy {
+    // Method 2: Using two-pointer technique
+    public static boolean isPalindromeTwoPointer(String str) {
+        int left = 0;
+        int right = str.length() - 1;
 
-        public boolean check(String input) {
-            if (input == null) return false;
-
-            Stack<Character> stack = new Stack<>();
-
-            // Push characters
-            for (char c : input.toCharArray()) {
-                stack.push(c);
+        while (left < right) {
+            if (str.charAt(left) != str.charAt(right)) {
+                return false;
             }
-
-            // Compare by popping
-            for (char c : input.toCharArray()) {
-                if (c != stack.pop()) {
-                    return false;
-                }
-            }
-
-            return true;
+            left++;
+            right--;
         }
+        return true;
     }
 
-    // Deque-based Strategy
-    static class DequeStrategy implements PalindromeStrategy {
+    // Method 3: Using Stack
+    public static boolean isPalindromeStack(String str) {
+        Stack<Character> stack = new Stack<>();
 
-        public boolean check(String input) {
-            if (input == null) return false;
+        for (char ch : str.toCharArray()) {
+            stack.push(ch);
+        }
 
-            Deque<Character> deque = new ArrayDeque<>();
-
-            for (char c : input.toCharArray()) {
-                deque.add(c);
+        for (char ch : str.toCharArray()) {
+            if (ch != stack.pop()) {
+                return false;
             }
-
-            while (deque.size() > 1) {
-                if (!deque.pollFirst().equals(deque.pollLast())) {
-                    return false;
-                }
-            }
-
-            return true;
         }
-    }
-
-    // Context
-    static class PalindromeChecker {
-        private PalindromeStrategy strategy;
-
-        public PalindromeChecker(PalindromeStrategy strategy) {
-            this.strategy = strategy;
-        }
-
-        public boolean check(String input) {
-            return strategy.check(input);
-        }
+        return true;
     }
 
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
 
-        String input = "level";
+        System.out.print("Enter a string: ");
+        String input = sc.nextLine();
 
-        // Choose strategy at runtime
-        PalindromeStrategy strategy = new StackStrategy();
-        // Try switching to:
-        // PalindromeStrategy strategy = new DequeStrategy();
+        // Normalize input (optional: ignore case and spaces)
+        String str = input.replaceAll("\\s+", "").toLowerCase();
 
-        PalindromeChecker checker = new PalindromeChecker(strategy);
+        // Method 1 Timing
+        long start1 = System.nanoTime();
+        boolean result1 = isPalindromeReverse(str);
+        long end1 = System.nanoTime();
 
-        boolean result = checker.check(input);
+        // Method 2 Timing
+        long start2 = System.nanoTime();
+        boolean result2 = isPalindromeTwoPointer(str);
+        long end2 = System.nanoTime();
 
-        System.out.println("Input : " + input);
-        System.out.println("Is Palindrome? : " + result);
+        // Method 3 Timing
+        long start3 = System.nanoTime();
+        boolean result3 = isPalindromeStack(str);
+        long end3 = System.nanoTime();
+
+        // Display Results
+        System.out.println("\n--- Results ---");
+        System.out.println("Reverse Method: " + result1 +
+                " | Time: " + (end1 - start1) + " ns");
+
+        System.out.println("Two Pointer Method: " + result2 +
+                " | Time: " + (end2 - start2) + " ns");
+
+        System.out.println("Stack Method: " + result3 +
+                " | Time: " + (end3 - start3) + " ns");
+
+        sc.close();
     }
 }
