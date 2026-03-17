@@ -1,42 +1,43 @@
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
-/**
- * UseCase5PalindromeCheckerApp
- *
- * Demonstrates palindrome checking using a Stack data structure.
- * The stack reverses the characters using LIFO principle.
- *
- * @author Edson
- * @version 5.0
- */
-
 public class PalindromeCheckerApp {
-
     public static void main(String[] args) {
 
-        // Input string
-        String word = "madam";
 
-        // Create a stack
+        String word = "level";
+
+        // Create a Queue (FIFO)
+        Queue<Character> queue = new LinkedList<>();
+
+
         Stack<Character> stack = new Stack<>();
 
-        // Push characters into the stack
-        for (int i = 0; i < word.length(); i++) {
-            stack.push(word.charAt(i));
+
+        for (char c : word.toCharArray()) {
+            queue.add(c);
+            stack.push(c);
         }
 
-        // Build reversed string by popping characters
-        String reversed = "";
 
-        while (!stack.isEmpty()) {
-            reversed = reversed + stack.pop();
+        boolean isPalindrome = true;
+
+        while (!queue.isEmpty() && !stack.isEmpty()) {
+            char fromQueue = queue.poll();
+            char fromStack = stack.pop();
+
+            if (fromQueue != fromStack) {
+                isPalindrome = false;
+                break;
+            }
         }
 
-        // Compare original and reversed strings
-        if (word.equals(reversed)) {
-            System.out.println("The string \"" + word + "\" is a Palindrome.");
+
+        if (isPalindrome) {
+            System.out.println(word + " is a Palindrome (Queue vs Stack comparison)");
         } else {
-            System.out.println("The string \"" + word + "\" is NOT a Palindrome.");
+            System.out.println(word + " is NOT a Palindrome (Queue vs Stack comparison)");
         }
     }
 }
